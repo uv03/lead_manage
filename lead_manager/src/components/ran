@@ -1,0 +1,97 @@
+const [users, setUsers] = useState([]);
+  const [load, setLoad] = useState(true);
+  const [isfilter,setIsfilter]=useState(false);
+  const [filterselcted,setFilterselected]=useState("Select attribute")
+  const getuser = async () => {
+    let { data } = await axios.get(reg, "/api");
+    // console.log(data);
+    setUsers(data.lead);
+    console.log(users);
+    setLoad(false);
+  };
+
+  useEffect(() => {
+    getuser();
+  }, []);
+  const handlefilter =(e) =>{
+    console.log(e);
+    setIsfilter(true);
+  }
+  return (
+    <>
+      {load == true ? (
+        <h3>Loading...</h3>
+      ) : (
+        <div className="container m-3">
+          <div className="dropdown filters">
+            <span>Filter by:</span>
+            <button
+              className="btn dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              {filterselcted}
+            </button>
+            <ul className="dropdown-menu">
+              <li>
+                <a className="dropdown-item" key={1} onClick={handlefilter}>
+                  Name
+                </a>
+              </li>
+              <li>
+                <a className="dropdown-item" key={2} onClick={handlefilter}>
+                  Email
+                </a>
+              </li>
+              <li>
+                <a className="dropdown-item" key={3} onClick={handlefilter}>
+                  Source
+                </a>
+              </li>
+              <li>
+                <a className="dropdown-item" key={4} onClick={handlefilter}>
+                  Phone
+                </a>
+              </li>
+            </ul>
+            {isfilter && (
+            <div className="filter_val">
+              <span>value : </span>
+              <input type="string" />
+            </div>
+
+          )}
+          </div>
+          
+          {users.length > 0 && (
+            <table className="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">Id</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Phone</th>
+                  <th scope="col">Source</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.length > 0 &&
+                  users.map((user) => {
+                    return (
+                      <tr key={user._id} onClick={() => console.log(user.id)}>
+                        <th scope="row">{user.id}</th>
+                        <td>{user.name}</td>
+                        <td>{user.email}</td>
+                        <td>{user.phone}</td>
+                        <td>{user.source}</td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
+    </>
+  );
