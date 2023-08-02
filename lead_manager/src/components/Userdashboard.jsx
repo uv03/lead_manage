@@ -10,7 +10,7 @@ const Userdashboard = () => {
   const [searchselcted,setsearchselected]=useState("select attribute");
   const [searchval,setsearchval]=useState("");
   const getlead = async () => {
-    let { data } = await axios.get("http://127.0.0.1:5000/api/lead",{headers: {
+    let { data } = await axios.get("https://leadmanager.onrender.com/api/lead",{headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("leadmanager")}`,
     },});
@@ -27,7 +27,7 @@ const Userdashboard = () => {
     getlead();
 
     setIssearch(true);
-    console.log(e.target.className.split(" ")[1]);
+    // console.log(e.target.className.split(" ")[1]);
     if(e.target.className.split(" ")[1]=="0") setsearchselected("id");
     if(e.target.className.split(" ")[1]=="1") setsearchselected("name");
     if(e.target.className.split(" ")[1]=="2") setsearchselected("email");
@@ -50,47 +50,47 @@ const Userdashboard = () => {
       item.id==searchval
     );
     setLeads(filteredArray)
-    console.log(leads)
+    // console.log(leads)
     }
     if(searchselcted=="name"){
       const filteredArray = leads.filter((item) =>
       item.name.toLowerCase().includes(searchval.toLowerCase())
     );
     setLeads(filteredArray)
-    console.log(leads)
+    // console.log(leads)
     }
     if(searchselcted=="email"){
       const filteredArray = leads.filter((item) =>
       item.email.toLowerCase().includes(searchval.toLowerCase())
     );
     setLeads(filteredArray)
-    console.log(leads)
+    // console.log(leads)
     }
     if(searchselcted=="source"){
       const filteredArray = leads.filter((item) =>
       item.source.toLowerCase().includes(searchval.toLowerCase())
     );
     setLeads(filteredArray)
-    console.log(leads)
+    // console.log(leads)
     }
     if(searchselcted=="phone"){
       const filteredArray = leads.filter((item) =>
       item.phone.toLowerCase().includes(searchval.toLowerCase())
     );
     setLeads(filteredArray)
-    console.log(leads)
+    // console.log(leads)
     }
   }
 
 
 
   const gotocomm = (id) =>{
-    console.log(id)
+    // console.log(id)
     localStorage.setItem("leadid", id);
     navigate("/lead/user/comm");
   }
   const gotofollow = (id) =>{
-    console.log(id)
+    // console.log(id)
     localStorage.setItem("leadid", id);
     navigate("/lead/user/follow");
   }

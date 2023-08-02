@@ -13,14 +13,15 @@ const Admindashboard = () => {
   const [c,setc]=useState(false);
   const [comms, setComms] = useState([]);
   const [follows, setFollows] = useState([]);
+
   const getlead = async () => {
-    let { data } = await axios.get("http://127.0.0.1:5000/api/lead", {
+    let { data } = await axios.get("https://leadmanager.onrender.com/api/lead", {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("leadmanager")}`,
       },
     });
-    console.log(data);
+    // console.log(data);
     setLeads(data.lead);
 
     setLoad(false);
@@ -33,64 +34,68 @@ const Admindashboard = () => {
       deletefollow();
       setc(false);
     }
-  }, [c]);
+  },[c]);
+
   const handlesearch = (e) => {
     getlead();
 
     setIssearch(true);
-    console.log(e.target.className.split(" ")[1]);
-    if (e.target.className.split(" ")[1] == "0") setsearchselected("Id");
-    if (e.target.className.split(" ")[1] == "1") setsearchselected("Name");
-    if (e.target.className.split(" ")[1] == "2") setsearchselected("Email");
-    if (e.target.className.split(" ")[1] == "3") setsearchselected("Source");
-    if (e.target.className.split(" ")[1] == "4") setsearchselected("Phone");
+    // console.log(e.target.className.split(" ")[1]);
+    if (e.target.className.split(" ")[1] === "0") setsearchselected("Id");
+    if (e.target.className.split(" ")[1] === "1") setsearchselected("Name");
+    if (e.target.className.split(" ")[1] === "2") setsearchselected("Email");
+    if (e.target.className.split(" ")[1] === "3") setsearchselected("Source");
+    if (e.target.className.split(" ")[1] === "4") setsearchselected("Phone");
   };
+
   const handlevalue = (e) => {
     setsearchval(e.target.value);
   };
+
   const searching = () => {
-    if (searchselcted == "Id") {
-      const filteredArray = leads.filter((item) => item.id == searchval);
+    if (searchselcted === "Id") {
+      const filteredArray = leads.filter((item) => item.id === searchval);
       setLeads(filteredArray);
-      console.log(leads);
+      // console.log(leads);
     }
-    if (searchselcted == "Name") {
+    if (searchselcted === "Name") {
       const filteredArray = leads.filter((item) =>
         item.name.toLowerCase().includes(searchval.toLowerCase())
       );
       setLeads(filteredArray);
-      console.log(leads);
+      // console.log(leads);
     }
-    if (searchselcted == "Email") {
+    if (searchselcted === "Email") {
       const filteredArray = leads.filter((item) =>
         item.email.toLowerCase().includes(searchval.toLowerCase())
       );
       setLeads(filteredArray);
-      console.log(leads);
+      // console.log(leads);
     }
-    if (searchselcted == "Source") {
+    if (searchselcted === "Source") {
       const filteredArray = leads.filter((item) =>
         item.source.toLowerCase().includes(searchval.toLowerCase())
       );
       setLeads(filteredArray);
-      console.log(leads);
+      // console.log(leads);
     }
-    if (searchselcted == "Phone") {
+    if (searchselcted === "Phone") {
       const filteredArray = leads.filter((item) =>
         item.phone.toLowerCase().includes(searchval.toLowerCase())
       );
       setLeads(filteredArray);
-      console.log(leads);
+      // console.log(leads);
     }
   };
 
   const gotocomm = (id) => {
-    console.log(id);
+    // console.log(id);
     localStorage.setItem("leadid", id);
     navigate(`/lead/admin/comm/${id}`);
   };
+
   const gotofollow = (id) => {
-    console.log(id);
+    // console.log(id);
     localStorage.setItem("leadid", id);
     navigate(`/lead/admin/follow/${id}`);
   };
@@ -98,32 +103,33 @@ const Admindashboard = () => {
   const addlead = () => {
     navigate("/lead/newlead");
   };
+
   const editlead = (id) => {
     navigate(`/lead/${id}`);
   };
+
   const deletelead = async (id,leadid) => {
-    console.log(id);
-    let { data } = await axios.get(
-      `http://127.0.0.1:5000/api/lead/communication/${id}`,
+    // console.log(id);
+    let {data } = await axios.get(
+      `https://leadmanager.onrender.com/api/lead/communication/${id}`,
       {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("leadmanager")}`,
         },
       }
+
     );
-    // console.log(data)
+    
     setComms(data.comm);
-     data  = await axios.get(`http://127.0.0.1:5000/api/lead/followup/${id}`,{headers: {
+     data  = await axios.get(`https://leadmanager.onrender.com/api/lead/followup/${id}`,{headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("leadmanager")}`,
       },});
-      // console.log(data.data.follow);
       setFollows(data.data.follow);
-      // console.log(follows)
     setc(true);
     data = await axios.delete(
-      `http://127.0.0.1:5000/api/lead/${leadid}`,
+      `https://leadmanager.onrender.com/api/lead/${leadid}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -131,14 +137,19 @@ const Admindashboard = () => {
         },
       }
     );
-    console.log("sss",data)
+    if (data.status == 200) {
+      Swal.fire("Lead Deleted successful", "", "success");
+    }
+   else {
+    Swal.fire("Oh no!Something's Wrong", `${data.msg}`, "error");}
   };
+
   const deletecomms = async()=>{
     if (comms.length > 0) {
       comms.map(async(comm)=>{
         let id=comm._id;
         let { data } = await axios.delete(
-          `http://127.0.0.1:5000/api/lead/communication/${id}`,
+          `https://leadmanager.onrender.com/api/lead/communication/${id}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -146,16 +157,17 @@ const Admindashboard = () => {
             },
           }
         );
-        console.log(data);
+        // console.log(data);
       })
     }
   }
+  
   const deletefollow = async()=>{
     if (follows.length > 0) {
       follows.map(async(follow)=>{
         let id=follow._id;
         let { data } = await axios.delete(
-          `http://127.0.0.1:5000/api/lead/followup/${id}`,
+          `https://leadmanager.onrender.com/api/lead/followup/${id}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -163,7 +175,7 @@ const Admindashboard = () => {
             },
           }
         );
-        console.log(data);
+        // console.log(data);
       })
     }
   }

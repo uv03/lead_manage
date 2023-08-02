@@ -15,11 +15,13 @@ const Editcomm = () => {
     type: "",
     content: "",
   });
+
   let [commError, setCommError] = useState({
     date_timeError: "",
     typeError: "",
     contentError: "",
   });
+
   let validatedate = (event) => {
     setComm({ ...comm, date_time: event.target.value });
     let regExp = /^\d{4}-\d{2}-\d{2}$/;
@@ -30,9 +32,11 @@ const Editcomm = () => {
         })
       : setCommError({ ...commError, date_timeErrorError: "" });
   };
+  
   let validatecontent = (event) => {
     setComm({ ...comm, content: event.target.value });
   };
+
   const settype = (event) => {
     setComm({ ...comm, type: event.target.value });
     if (event.target.value == "Select type of Communcation") {
@@ -40,11 +44,12 @@ const Editcomm = () => {
     } else {
       setCommError({ ...commError, typeError: "" });
     }
-    console.log(event.target.value);
+    // console.log(event.target.value);
   };
+
   const getcomm = async () => {
     let { data } = await axios.get(
-      `http://127.0.0.1:5000/api/lead/communication/comm/${id}`,
+      `https://leadmanager.onrender.com/api/lead/communication/comm/${id}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -55,8 +60,8 @@ const Editcomm = () => {
     setComm(data.comm);
     seta("1")
   };
+
   const submitComm =async(event) =>{
-    event.preventDefault();
     event.preventDefault();
     if(
         comm.lead_id && comm.date_time.trim() && comm.content.trim() && comm.type
@@ -66,7 +71,7 @@ const Editcomm = () => {
         let content=comm.content.trim();
         let type=comm.type;
 
-        const { status } = await axios.put(`http://127.0.0.1:5000/api/lead/communication/${id}`,
+        const { status } = await axios.put(`https://leadmanager.onrender.com/api/lead/communication/${id}`,
         { leadId,content, date_time, type},
         {
           headers: {
@@ -75,7 +80,6 @@ const Editcomm = () => {
           },
         }
       );
-    //   console.log(status);
      if (status == 200) {
         Swal.fire("communication history updated successful", "", "success");
         navigate(`/lead/admin/comm/${leadId.id}`);
@@ -84,8 +88,9 @@ const Editcomm = () => {
     }else {
         Swal.fire("Oh no!", "Something went wrong! Try again", "error");
       }
-    console.log(comm)
+    // console.log(comm)
   }
+
   useEffect(() => {
     getcomm();
     if(comm.type=="Text") setType('Text')
@@ -93,6 +98,7 @@ const Editcomm = () => {
     if(comm.type=="Written") setType('Written')
 
   }, [a]);
+  
   return (
     <div className="main p-2">
       <section className="pt-2 d-flex justify-content-center">
@@ -158,7 +164,6 @@ const Editcomm = () => {
                   onChange={settype}
                   // defaultValue={type}
                 >
-                  {/* {console.log(type)} */}
                   <option value="Call"selected={type=="Call"}>Call</option>
                   <option value="Text" selected={type=="Text"}>Text</option>
                   <option value="Written" selected={type=="Written"}>Written</option>

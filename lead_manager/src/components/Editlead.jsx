@@ -22,18 +22,61 @@ const Editlead = () => {
   });
 
   const getlead=async()=>{
-    let { data } = await axios.get(`http://127.0.0.1:5000/api/lead/${leadId}`,{headers: {
+    let { data } = await axios.get(`https://leadmanager.onrender.com/api/lead/${leadId}`,{headers: {
   "Content-Type": "application/json",
   Authorization: `Bearer ${localStorage.getItem("leadmanager")}`,
 },});
-console.log(data.lead);
-console.log(leadId);
+// console.log(data.lead);
+// console.log(leadId);
 setLead(data.lead);
 }
 
 useEffect(() => {
     getlead();
   }, []);
+
+  let validateid = (event) => {
+    setLead({ ...lead, id: event.target.value });
+    let regExp = /^[0-9]+$/;
+    !regExp.test(event.target.value)
+      ? setLeadError({ ...leadError, idError: "Enter a proper id" })
+      : setLeadError({ ...leadError, idError: "" });
+      // console.log(lead.id);
+      // console.log(leadError.idError);
+
+  };
+
+  let validatename = (event) => {
+    setLead({ ...lead, name: event.target.value });
+    let regExp = /^[a-zA-Z]+$/;
+    !regExp.test(event.target.value)
+      ? setLeadError({ ...leadError, nameError: "Enter a proper leadname" })
+      : setLeadError({ ...leadError, nameError: "" });
+  };
+
+  let validateEmail = (event) => {
+    setLead({ ...lead, email: event.target.value });
+    let regExp = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/;
+    !regExp.test(event.target.value) || event.target.value.trim() == ""
+      ? setLeadError({ ...leadError, emailError: "Enter a proper Email" })
+      : setLeadError({ ...leadError, emailError: "" });
+  };
+
+  let validatephone = (event) => {
+    setLead({ ...lead, phone: event.target.value });
+    let regExp = /^[0-9]+$/;
+    !regExp.test(event.target.value)
+      ? setLeadError({ ...leadError, phoneError: "Enter a proper Phone number" })
+      : setLeadError({ ...leadError, phoneError: "" });
+  };
+
+  let validatesource = (event) => {
+    setLead({ ...lead, source: event.target.value });
+    let regExp = /^[a-zA-Z]+$/;
+    !regExp.test(event.target.value)
+      ? setLeadError({ ...leadError, sourceError: "Enter a proper source" })
+      : setLeadError({ ...leadError, sourceError: "" });
+  };
 
   let submitLead = async (event) => {
     event.preventDefault();
@@ -50,7 +93,7 @@ useEffect(() => {
       let phone = lead.phone.trim();
       let source = lead.source.trim();
 
-      const { status } = await axios.put(`http://127.0.0.1:5000/api/lead/${leadId}`,
+      const { status } = await axios.put(`https://leadmanager.onrender.com/api/lead/${leadId}`,
         { id,name, email, phone,source },
         {
           headers: {
@@ -59,7 +102,7 @@ useEffect(() => {
           },
         }
       );
-      console.log(status);
+      // console.log(status);
       if (status == 201) {
         Swal.fire("Email of lead already exists", "", "error");
         return;
@@ -72,50 +115,12 @@ useEffect(() => {
         navigate("/dashboard/admin");
       }
       else if(status==500){}
-      console.log(lead);
+      // console.log(lead);
     } else {
       Swal.fire("Oh no!", "Something went wrong! Try again", "error");
     }
   };
-  let validateid = (event) => {
-    setLead({ ...lead, id: event.target.value });
-    let regExp = /^[0-9]+$/;
-    !regExp.test(event.target.value)
-      ? setLeadError({ ...leadError, idError: "Enter a proper id" })
-      : setLeadError({ ...leadError, idError: "" });
-      console.log(lead.id);
-      console.log(leadError.idError);
-
-  };
-  let validatename = (event) => {
-    setLead({ ...lead, name: event.target.value });
-    let regExp = /^[a-zA-Z]+$/;
-    !regExp.test(event.target.value)
-      ? setLeadError({ ...leadError, nameError: "Enter a proper leadname" })
-      : setLeadError({ ...leadError, nameError: "" });
-  };
-
-  let validateEmail = (event) => {
-    setLead({ ...lead, email: event.target.value });
-    let regExp = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/;
-    !regExp.test(event.target.value) || event.target.value.trim() == ""
-      ? setLeadError({ ...leadError, emailError: "Enter a proper Email" })
-      : setLeadError({ ...leadError, emailError: "" });
-  };
-  let validatephone = (event) => {
-    setLead({ ...lead, phone: event.target.value });
-    let regExp = /^[0-9]+$/;
-    !regExp.test(event.target.value)
-      ? setLeadError({ ...leadError, phoneError: "Enter a proper Phone number" })
-      : setLeadError({ ...leadError, phoneError: "" });
-  };
-  let validatesource = (event) => {
-    setLead({ ...lead, source: event.target.value });
-    let regExp = /^[a-zA-Z]+$/;
-    !regExp.test(event.target.value)
-      ? setLeadError({ ...leadError, sourceError: "Enter a proper source" })
-      : setLeadError({ ...leadError, sourceError: "" });
-  };
+  
   return (
     <div className="main">
       <section className="pt-2 d-flex justify-content-center">

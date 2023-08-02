@@ -5,7 +5,7 @@ import axios from "axios";
 
 
 const Editfollow = () => {
-    const id = useParams().followid;
+  const id = useParams().followid;
   let navigate = useNavigate();
   const [type,setType]=useState('')
   const [a,seta]=useState('')
@@ -19,6 +19,7 @@ const Editfollow = () => {
     due_dateError: "",
     statusError: "",
   });
+
   let validatedate = (event) => {
     setFollow({ ...follow, due_date: event.target.value });
     let regExp = /^\d{4}-\d{2}-\d{2}$/;
@@ -29,10 +30,12 @@ const Editfollow = () => {
         })
       : setFollowError({ ...followError, due_dateError: "" });
   };
+
   let setdescription = (event) => {
     setFollow({ ...follow, description: event.target.value });
    
   };
+
   const setstatus = (event) => {
     setFollow({...follow,status:event.target.value});
     if(event.target.value=="Select current status"){
@@ -40,9 +43,10 @@ const Editfollow = () => {
     }else{setFollowError({ ...followError, statusError: "" })}
     // console.log(event.target.value);
   };
+
   const getfollow = async () => {
     let { data } = await axios.get(
-      `http://127.0.0.1:5000/api/lead/followup/follow/${id}`,
+      `https://leadmanager.onrender.com/api/lead/followup/follow/${id}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -50,29 +54,30 @@ const Editfollow = () => {
         },
       }
     );
-    console.log(data)
+    // console.log(data)
     setFollow(data.follow);
     let date=follow.due_date
     seta("1")
   };
+
   useEffect(() => {
     getfollow();
     if(follow.status=="Pending") setType('Pending')
     if(follow.status=="Completed") setType('Completed')
   }, [a]);
+
   const submitFollow =async (event) =>{
     event.preventDefault();
-    
     if(
         follow.lead_id && follow.due_date.trim() && follow.description.trim() && follow.status
     ){
-      console.log("4")
+      // console.log("4")
         let leadId=follow.lead_id;
         let due_date=follow.due_date.trim();
         let description=follow.description.trim();
         let status=follow.status;
 
-        status= await axios.put(`http://127.0.0.1:5000/api/lead/followup/${id}`,
+        status= await axios.put(`https://leadmanager.onrender.com/api/lead/followup/${id}`,
         {leadId,description,due_date,status},
         {
           headers: {
@@ -81,7 +86,7 @@ const Editfollow = () => {
           },
         }
       );
-      console.log(status.status);
+      // console.log(status.status);
      if (status.status == 200) {
         Swal.fire("followup scheduled successful", "", "success");
         navigate(`/lead/admin/follow/${leadId.id}`);
@@ -91,6 +96,7 @@ const Editfollow = () => {
         Swal.fire("Oh no!", "Something went wrong! Try again", "error");
       }
   }
+  
   return (
     <div className="main">
       <section className="pt-2 d-flex justify-content-center">

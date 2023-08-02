@@ -1,14 +1,6 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
-import { reg } from "../Apiroutes";
-const Home = () => {
-  // let navigate = useNavigate();
-  // let clickLogOut = async () => {
-  //   localStorage.removeItem("devroom");
-  //   navigate("/users/login");
-  // };
+import React from "react";
 
+const Home = () => {
  return (
      <div className="main position-relative">
           <div className="homebg container d-flex  flex-column position-absolute top-50 start-50 translate-middle">

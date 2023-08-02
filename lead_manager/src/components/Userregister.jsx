@@ -18,6 +18,49 @@ const Userregister = () => {
     phoneError: "",
     roleError: "",
   });
+  
+  let validateusername = (event) => {
+    setUser({ ...user, name: event.target.value });
+    let regExp = /^[a-zA-Z]/;
+    !regExp.test(event.target.value)
+      ? setUserError({ ...userError, nameError: "Enter a proper Username" })
+      : setUserError({ ...userError, nameError: "" });
+  };
+
+  let validateEmail = (event) => {
+    setUser({ ...user, email: event.target.value });
+    let regExp = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/;
+    !regExp.test(event.target.value) || event.target.value.trim() === ""
+      ? setUserError({ ...userError, emailError: "Enter a proper Email" })
+      : setUserError({ ...userError, emailError: "" });
+  };
+
+  let validatePassword = (event) => {
+    setUser({ ...user, password: event.target.value });
+    if (event.target.value.trim() === "")
+      setUserError({ ...userError, passwordError: "Enter a proper Password" });
+    else setUserError({ ...userError, passwordError: "" });
+  };
+  // let validateRole = (event) => {
+  //   setUser({ ...user, role: event.target.value });
+  //   if (
+  //     event.target.value.trim() == "User" ||
+  //     (event.target.value.trim() == "Admin" / event.target.value.trim()) ==
+  //       "user" ||
+  //     event.target.value.trim() == "admin"
+  //   )
+  //     setUserError({ ...userError, roleError: "" });
+  //   else
+  //     setUserError({ ...userError, roleError: "Enter proper Role Admin/User" });
+  // };
+  let validatephone = (event) => {
+    setUser({ ...user, phone: event.target.value });
+    let regExp = /^[0-9]/;
+    !regExp.test(event.target.value)
+      ? setUserError({ ...userError, nameError: "Enter a proper Phone" })
+      : setUserError({ ...userError, nameError: "" });
+  };
+
   let submitRegistration = async (event) => {
     event.preventDefault();
     if (
@@ -33,7 +76,7 @@ const Userregister = () => {
       let role = user.role.trim();
       let phone = Number(user.phone.trim());
 
-      const { status } = await axios.post("http://127.0.0.1:5000/api/users/register",
+      const { status } = await axios.post("https://leadmanager.onrender.com/api/users/register",
         { name, email, password, role, phone },
         {
           headers: {
@@ -41,60 +84,20 @@ const Userregister = () => {
           },
         }
       );
-      console.log(status);
-      if (status == 201) {
+      // console.log(status);
+      if (status === 201) {
         Swal.fire("User already exists", "", "error");
         return;
-      } else if (status == 200) {
+      } else if (status === 200) {
         Swal.fire("Registration successful", "", "success");
         navigate("/users/login");
       }
-      console.log(user);
+      // console.log(user);
     } else {
       Swal.fire("Oh no!", "Something went wrong! Try again", "error");
     }
   };
-  let validateusername = (event) => {
-    setUser({ ...user, name: event.target.value });
-    let regExp = /^[a-zA-Z]/;
-    !regExp.test(event.target.value)
-      ? setUserError({ ...userError, nameError: "Enter a proper Username" })
-      : setUserError({ ...userError, nameError: "" });
-  };
 
-  let validateEmail = (event) => {
-    setUser({ ...user, email: event.target.value });
-    let regExp = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/;
-    !regExp.test(event.target.value) || event.target.value.trim() == ""
-      ? setUserError({ ...userError, emailError: "Enter a proper Email" })
-      : setUserError({ ...userError, emailError: "" });
-  };
-
-  let validatePassword = (event) => {
-    setUser({ ...user, password: event.target.value });
-    if (event.target.value.trim() == "")
-      setUserError({ ...userError, passwordError: "Enter a proper Password" });
-    else setUserError({ ...userError, passwordError: "" });
-  };
-  let validateRole = (event) => {
-    setUser({ ...user, role: event.target.value });
-    if (
-      event.target.value.trim() == "User" ||
-      (event.target.value.trim() == "Admin" / event.target.value.trim()) ==
-        "user" ||
-      event.target.value.trim() == "admin"
-    )
-      setUserError({ ...userError, roleError: "" });
-    else
-      setUserError({ ...userError, roleError: "Enter proper Role Admin/User" });
-  };
-  let validatephone = (event) => {
-    setUser({ ...user, phone: event.target.value });
-    let regExp = /^[0-9]/;
-    !regExp.test(event.target.value)
-      ? setUserError({ ...userError, nameError: "Enter a proper Phone" })
-      : setUserError({ ...userError, nameError: "" });
-  };
   return (
     <div className="main">
       <section className="pt-2 d-flex justify-content-center">
@@ -167,7 +170,7 @@ const Userregister = () => {
                     ""
                   )}
                 </div>
-                <div className="form-group">
+                {/* <div className="form-group">
                   <input
                     required
                     name="role"
@@ -184,7 +187,7 @@ const Userregister = () => {
                   ) : (
                     ""
                   )}
-                </div>
+                </div> */}
                 <div className="form-group">
                   <input
                     required

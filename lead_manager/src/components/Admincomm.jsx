@@ -14,10 +14,11 @@ const Admincomm = () => {
   const [searchval, setsearchval] = useState("");
   const [cardv,setCardv]=useState([])
   const [deleted,setdeleted]=useState(false);
+
   const getcomm = async () => {
     
     let { data } = await axios.get(
-      `http://127.0.0.1:5000/api/lead/communication/${id}`,
+      `https://leadmanager.onrender.com/api/lead/communication/${id}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -25,7 +26,7 @@ const Admincomm = () => {
         },
       }
     );
-    console.log(data);
+    // console.log(data);
     setComm(data.comm);
     
     setLoad(false);
@@ -40,40 +41,43 @@ const Admincomm = () => {
     getcomm();
 
     setIssearch(true);
-    console.log(e.target.className.split(" ")[1]);
+    // console.log(e.target.className.split(" ")[1]);
     if (e.target.className.split(" ")[1] == "0") setsearchselected("name");
     if (e.target.className.split(" ")[1] == "1") setsearchselected("date");
     if (e.target.className.split(" ")[1] == "2") setsearchselected("type");
   };
+
   const handlevalue = (e) => {
     setsearchval(e.target.value);
   };
+
   const searching = () => {
     if (searchselcted == "name") {
       const filteredArray = comm.filter((item) =>
         item.lead_id.name.toLowerCase().includes(searchval.toLowerCase())
       );
       setComm(filteredArray);
-      console.log(comm);
+      // console.log(comm);
     }
     if (searchselcted == "date") {
       const filteredArray = comm.filter((item) =>
         item.date_time.toLowerCase().includes(searchval.toLowerCase())
       );
       setComm(filteredArray);
-      console.log(comm);
+      // console.log(comm);
     }
     if (searchselcted == "type") {
       const filteredArray = comm.filter((item) =>
         item.type.toLowerCase().includes(searchval.toLowerCase())
       );
       setComm(filteredArray);
-      console.log(comm);
+      // console.log(comm);
     }
   };
+
   const handleclick = (name, date, type, content) => {
     setIsclicked(true);
-    console.log(name);
+    // console.log(name);
     let cardval={}
     cardval.Name = name;
     cardval.Date = date;
@@ -81,15 +85,18 @@ const Admincomm = () => {
     cardval.Content = content;
     setCardv(cardval)
   };
+
   const addhistory =() => {
     navigate(`/lead/comm/newcomm/${id}`);
   }
+
   const editcomm =(commid)=>{
     navigate(`/lead/comm/${commid}`)
   }
+  
   const deletecomm =async(commid)=>{
-    let { data } = await axios.delete(
-      `http://127.0.0.1:5000/api/lead/communication/${commid}`,
+    let { status,data } = await axios.delete(
+      `https://leadmanager.onrender.com/api/lead/communication/${commid}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -97,8 +104,16 @@ const Admincomm = () => {
         },
       }
     );
-    setdeleted(true);
+    if (status == 200) {
+      Swal.fire("communication history deleted successful", "", "success");
+    }
+   else {
+    Swal.fire("Oh no!Something's Wrong", `${data.msg}`, "error");
   }
+    setdeleted(true);
+
+  }
+  
   return (
     <div className="main pt-2">
       {load && <h3 className="container d-flex justify-content-center">Loading...</h3>}
@@ -178,7 +193,7 @@ const Admincomm = () => {
                           <td>{com.type}</td>
                           <td>
                             <button
-                              className="btn btn-primary me-1"
+                              className="btn btn-info me-1"
                               onClick={() =>
                                 handleclick(
                                   com.lead_id.name,
@@ -191,7 +206,7 @@ const Admincomm = () => {
                               View
                             </button>
                             <button
-                              className="btn btn-primary me-1"
+                              className="btn btn-warning me-1"
                               onClick={() =>
                                 editcomm(com._id)
                               }
@@ -199,7 +214,7 @@ const Admincomm = () => {
                               Edit
                             </button>
                             <button
-                              className="btn btn-primary"
+                              className="btn btn-danger"
                               onClick={() =>
                                 deletecomm(com._id)
                               }

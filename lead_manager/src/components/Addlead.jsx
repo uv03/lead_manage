@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -13,49 +13,13 @@ const Addlead = () => {
     source: "",
   });
   let [leadError, setLeadError] = useState({
-    idError:"",
+    idError: "",
     nameError: "",
     emailError: "",
     phoneError: "",
     sourceError: "",
   });
-  let submitLead = async (event) => {
-    event.preventDefault();
-    if (
-      lead.id.trim() !== "" &&
-      lead.name.trim() !== "" &&
-      lead.email.trim() !== "" &&
-      lead.phone.trim() !== "" &&
-      lead.source.trim() !== ""
-    ) {
-      let id = Number(lead.id.trim());
-      let name = lead.name.trim();
-      let email = lead.email.trim();
-      let phone = lead.phone.trim();
-      let source = lead.source.trim();
 
-      const { status,data } = await axios.post("http://127.0.0.1:5000/api/lead/newlead",
-        { id,name, email, phone,source },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("leadmanager")}`,
-          },
-        }
-      );
-      console.log(data,status);
-      if (status == 201) {
-        Swal.fire("lead already exists", `${data.msg}`, "error");
-        return;
-      } else if (status == 200) {
-        Swal.fire("Lead inserted successful", "", "success");
-        navigate("/dashboard/admin");
-      }
-      console.log(lead);
-    } else {
-      Swal.fire("Oh no!", "Something went wrong! Try again", "error");
-    }
-  };
   let validateid = (event) => {
     setLead({ ...lead, id: event.target.value });
     let regExp = /^[0-9]/;
@@ -63,6 +27,7 @@ const Addlead = () => {
       ? setLeadError({ ...leadError, idError: "Enter a proper id" })
       : setLeadError({ ...leadError, idError: "" });
   };
+
   let validatename = (event) => {
     setLead({ ...lead, name: event.target.value });
     let regExp = /^[a-zA-Z]/;
@@ -78,13 +43,18 @@ const Addlead = () => {
       ? setLeadError({ ...leadError, emailError: "Enter a proper Email" })
       : setLeadError({ ...leadError, emailError: "" });
   };
+
   let validatephone = (event) => {
     setLead({ ...lead, phone: event.target.value });
     let regExp = /^[0-9]+$/;
     !regExp.test(event.target.value)
-      ? setLeadError({ ...leadError, phoneError: "Enter a proper Phone number" })
+      ? setLeadError({
+          ...leadError,
+          phoneError: "Enter a proper Phone number",
+        })
       : setLeadError({ ...leadError, phoneError: "" });
   };
+
   let validatesource = (event) => {
     setLead({ ...lead, source: event.target.value });
     let regExp = /^[a-zA-Z]/;
@@ -92,20 +62,60 @@ const Addlead = () => {
       ? setLeadError({ ...leadError, sourceError: "Enter a proper source" })
       : setLeadError({ ...leadError, sourceError: "" });
   };
+
+  let submitLead = async (event) => {
+    event.preventDefault();
+    if (
+      lead.id.trim() !== "" &&
+      lead.name.trim() !== "" &&
+      lead.email.trim() !== "" &&
+      lead.phone.trim() !== "" &&
+      lead.source.trim() !== ""
+    ) {
+      let id = Number(lead.id.trim());
+      let name = lead.name.trim();
+      let email = lead.email.trim();
+      let phone = lead.phone.trim();
+      let source = lead.source.trim();
+
+      const { status, data } = await axios.post(
+        "https://leadmanager.onrender.com/api/lead/newlead",
+        { id, name, email, phone, source },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("leadmanager")}`,
+          },
+        }
+      );
+      // console.log(data, status);
+      if (status == 201) {
+        Swal.fire("lead already exists", `${data.msg}`, "error");
+        return;
+      } else if (status == 200) {
+        Swal.fire("Lead inserted successful", "", "success");
+        navigate("/dashboard/admin");
+      }
+      // console.log(lead);
+    } else {
+      Swal.fire("Oh no!", "Something went wrong! Try again", "error");
+    }
+  };
+
   return (
-   <div className="main">
-    <section className="pt-2 d-flex justify-content-center">
-    <div className="container  homebg">
-    <div className="row animated zoomIn m-2">
-    <div className="col">
-            <p className="h3 text-primary">Lead</p>
-            <p>Add a new lead</p>
+    <div className="main">
+      <section className="pt-2 d-flex justify-content-center">
+        <div className="container  homebg">
+          <div className="row animated zoomIn m-2">
+            <div className="col">
+              <p className="h3 text-primary">Lead</p>
+              <p>Add a new lead</p>
+            </div>
           </div>
-    </div>
-    <div className="row pt-2">
-    <div className="col-md-8 animated zoomIn m-2">
+          <div className="row pt-2">
+            <div className="col-md-8 animated zoomIn m-2">
               <form onSubmit={submitLead}>
-              <div className="form-group">
+                <div className="form-group">
                   <input
                     required
                     name="lead_id"
@@ -174,7 +184,9 @@ const Addlead = () => {
                     placeholder="Phone"
                   />
                   {leadError.phoneError.length > 0 ? (
-                    <small className="text-danger">{leadError.phoneError}</small>
+                    <small className="text-danger">
+                      {leadError.phoneError}
+                    </small>
                   ) : (
                     ""
                   )}
@@ -192,7 +204,9 @@ const Addlead = () => {
                     placeholder="Source"
                   />
                   {leadError.sourceError.length > 0 ? (
-                    <small className="text-danger">{leadError.sourceError}</small>
+                    <small className="text-danger">
+                      {leadError.sourceError}
+                    </small>
                   ) : (
                     ""
                   )}
@@ -207,18 +221,20 @@ const Addlead = () => {
               </form>
               <small>
                 Go to Dashboard?
-                <Link to="/dashboard/admin" className="font-weight-bold text-primary">
+                <Link
+                  to="/dashboard/admin"
+                  className="font-weight-bold text-primary"
+                >
                   {" "}
                   Dashboard
                 </Link>
               </small>
             </div>
+          </div>
+        </div>
+      </section>
     </div>
-    </div>
-    </section>
-   </div>
   );
-}
+};
 
-      
-export default Addlead
+export default Addlead;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -11,9 +11,15 @@ const Password = () => {
   const [passwordError,setpassworderror]=useState("");
   const submitpassword =async(e)=>{
     e.preventDefault();
-    let {user}=await axios.put("http://127.0.0.1:5000/api/users/changepassword",{email,password});
-    console.log(user);
-    Navigate("/users/login");
+    let {status,user}=await axios.put("https://leadmanager.onrender.com/api/users/changepassword",{email,password});
+    // console.log(user);
+    if (status.status == 200) {
+      Swal.fire("password reset successful", "", "success");
+      Navigate("/users/login");
+    }
+    else {
+    Swal.fire("Oh no!", "Something went wrong! Try again", "error");
+  }
   }
   const validatePassword =(e)=>{
     Setpassword(e.target.value);

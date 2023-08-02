@@ -36,7 +36,7 @@ const Userlogin = () => {
     else setUserError({ ...userError, passwordError: "" });
   };
   let dashboard = async () => {
-    let { data } = await axios.get("http://127.0.0.1:5000/api/users/me", {
+    let { data } = await axios.get("https://leadmanager.onrender.com/api/users/me", {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("leadmanager")}`,
@@ -52,7 +52,7 @@ const Userlogin = () => {
       let email = user.email;
       let password = user.password;
       const { status, data } = await axios.post(
-        "http://127.0.0.1:5000/api/users/login",
+        "https://leadmanager.onrender.com/api/users/login",
         { email, password },
         {
           headers: {

@@ -32,10 +32,10 @@ const Resetpass = () => {
         e.preventDefault();
         const cOTP = Math.floor(Math.random() * 9000 + 1000);
         setOtp(cOTP);
-        console.log(otp)
+        // console.log(otp)
         let  recipient_email=email;
         let OTP=cOTP;
-        let { status,data } = await axios.post("http://127.0.0.1:5000/api/users/reset",{recipient_email,OTP});
+        let { status,data } = await axios.post("https://leadmanager.onrender.com/api/users/reset",{recipient_email,OTP});
         // console.log(status,data)
         if(status==200){setSentotp(true)}
         else {
@@ -64,7 +64,7 @@ const Resetpass = () => {
       .then(() => setDisable(true))
       .then(() => alert("A new OTP has succesfully been sent to your email."))
       .then(() => setTimer(60))
-      .catch(console.log);
+      .catch(alert("something went wrong"));
     }
     let validateEmail = (event) => {
         setEmail(event.target.value);

@@ -1,23 +1,26 @@
 import React, {useEffect, useState } from "react";
 import axios from "axios";
 import {useNavigate,useParams } from "react-router-dom";
+import Swal from "sweetalert2";
+
 const Adminfollow = () => {
   const id=useParams().leadid;
   const navigate=useNavigate()
-    const [follows, setfollows] = useState([]);
-    const [load, setLoad] = useState(true);
-    const [issearch,setIssearch]=useState(false);
-    const [searchselcted,setsearchselected]=useState("select attribute");
-    const [searchval,setsearchval]=useState("");
-    const [isclicked,setIsclicked]=useState(false);
-    const [cardv,setCardv]=useState([])
-    const [deleted,setdeleted]=useState(false);
-    const getfollow = async () => {
-    let { data } = await axios.get(`http://127.0.0.1:5000/api/lead/followup/${id}`,{headers: {
+  const [follows, setfollows] = useState([]);
+  const [load, setLoad] = useState(true);
+  const [issearch,setIssearch]=useState(false);
+  const [searchselcted,setsearchselected]=useState("select attribute");
+  const [searchval,setsearchval]=useState("");
+  const [isclicked,setIsclicked]=useState(false);
+  const [cardv,setCardv]=useState([])
+  const [deleted,setdeleted]=useState(false);
+
+  const getfollow = async () => {
+    let { data } = await axios.get(`https://leadmanager.onrender.com/api/lead/followup/${id}`,{headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("leadmanager")}`,
     },});
-    console.log(data);
+    // console.log(data);
     setfollows(data.follow);
     
     setLoad(false);
@@ -27,45 +30,46 @@ const Adminfollow = () => {
     getfollow();
     if(deleted)setdeleted(false)
   }, [deleted]);
+
   const handlesearch =(e) =>{
     getfollow();
 
     setIssearch(true);
-    console.log(e.target.className.split(" ")[1]);
+    // console.log(e.target.className.split(" ")[1]);
     if(e.target.className.split(" ")[1]=="0") setsearchselected("name");
     if(e.target.className.split(" ")[1]=="1") setsearchselected("date");
     if(e.target.className.split(" ")[1]=="2") setsearchselected("status");    
   }
+
   const handlevalue =(e) =>{
 
     setsearchval(e.target.value) 
 
   }
+
   const searching =()=>{
     if(searchselcted=="name"){
       const filteredArray = follows.filter((item) =>
       item.lead_id.name.toLowerCase().includes(searchval.toLowerCase())
     );
     setfollows(filteredArray)
-    console.log(follows)
+    // console.log(follows)
     }
     if(searchselcted=="date"){
       const filteredArray = follows.filter((item) =>
       item.due_date.toLowerCase().includes(searchval.toLowerCase())
     );
     setfollows(filteredArray)
-    console.log(follows)
+    // console.log(follows)
     }
     if(searchselcted=="status"){
       const filteredArray = follows.filter((item) =>
       item.status.toLowerCase().includes(searchval.toLowerCase())
     );
     setfollows(filteredArray)
-    console.log(follows)
+    // console.log(follows)
     }
   }
-
-
 
   const handleclick = (name,date,status,description,email) =>{
     setIsclicked(true);
@@ -85,13 +89,15 @@ const Adminfollow = () => {
     }
     setCardv(cardval)
   }
+
   const addfollow =() => {
     // console.log(id)
     navigate(`/lead/follow/newfollow/${id}`);
   }
+
   const deletefollow =async(followid) => {
-    let { data } = await axios.delete(
-      `http://127.0.0.1:5000/api/lead/followup/${followid}`,
+    let { status,data } = await axios.delete(
+      `https://leadmanager.onrender.com/api/lead/followup/${followid}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -99,12 +105,19 @@ const Adminfollow = () => {
         },
       }
     );
+    if (status == 200) {
+      Swal.fire("communication history inserted successful", "", "success");
+    }
+   else {
+    Swal.fire("Oh no!", `${data.msg}`, "error");}
     setdeleted(true);
   }
+
   const editfollow =(followid) => {
     // console.log(id)
     navigate(`/lead/follow/${followid}`);
   }
+  
   return (
     <div className="main pt-2">
         {load && <h3 className="container d-flex justify-content-center">Loading...</h3>}
@@ -184,7 +197,7 @@ const Adminfollow = () => {
                           <td>{follow.status}</td>
                           <td>
                             <button
-                              className="btn btn-primary me-1"
+                              className="btn btn-info me-1"
                               onClick={() =>
                                 handleclick(
                                   follow.lead_id.name,
@@ -198,7 +211,7 @@ const Adminfollow = () => {
                               View
                             </button>
                             <button
-                              className="btn btn-primary me-1"
+                              className="btn btn-warning me-1"
                               onClick={() =>
                                 editfollow(follow._id)
                               }
@@ -206,7 +219,7 @@ const Adminfollow = () => {
                               Edit
                             </button>
                             <button
-                              className="btn btn-primary"
+                              className="btn btn-danger"
                               onClick={() =>
                                 deletefollow(follow._id)
                               }

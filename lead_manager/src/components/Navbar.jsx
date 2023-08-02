@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 let Navbar = () => {
@@ -8,7 +8,7 @@ let Navbar = () => {
   const [user, setUser] = useState({});
 
   const getUser = async () => {
-    const { data } = await axios.get("http://127.0.0.1:5000/api/users/me", {
+    const { data } = await axios.get("https://leadmanager.onrender.com/api/users/me", {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("leadmanager")}`,
